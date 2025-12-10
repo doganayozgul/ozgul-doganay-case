@@ -1,269 +1,131 @@
-📌 README.md — Insider QA Automation Case
-🎯 Project Overview
+# QA Automation Case
 
-This project contains an automated end-to-end test case for the Insider QA Hiring Case Study.
-The automation is built using:
+Automated end-to-end test suite for the QA Hiring Case Study. Validates the complete QA job application flow including navigation, filtering, job list verification, and redirecting to the Lever application form page.
 
-Python
+## Features
 
-Selenium WebDriver
+- ✅ Page Object Model (POM) architecture with separate Page Object classes
+- ✅ Robust error handling and fallback mechanisms for UI variations
+- ✅ Supports both positive and empty-state scenarios
+- ✅ Automatic cookie banner handling
+- ✅ Dynamic empty-state detection
+- ✅ Explicit waits (WebDriverWait) for reliable element interaction
+- ✅ Robust locators using `normalize-space` and `contains` for stable element finding
 
-Pytest
+## Tech Stack
 
-Page Object Model (POM)
+- **Python** 3.8+
+- **Selenium WebDriver**
+- **Pytest**
+- **webdriver-manager**
 
-The goal is to validate the complete QA job application flow, including navigation, filtering, job list verification, and redirecting to the Lever application form page.
+## Requirements
 
-The test suite is designed to be robust against UI changes, and supports both:
+- Python 3.8 or higher
+- Chrome Browser (latest version)
+- pip (Python package manager)
 
-Positive scenarios (when QA positions are available),
+## Installation
 
-Empty-state scenarios (e.g. "Content is not available").
+1. **Clone the repository**
+   ```bash
+   cd ozgul_doganay_case
+   ```
 
-📘 Case Requirements
+2. **Create virtual environment**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate  # macOS/Linux
+   # .venv\Scripts\activate   # Windows
+   ```
 
-The case requested validation of the following flow:
+3. **Install dependencies**
+   ```bash
+   pip install --upgrade pip
+   pip install selenium pytest webdriver-manager
+   ```
 
-Visit https://useinsider.com
- and verify home page is open
+ChromeDriver is automatically managed by `webdriver-manager` - no manual installation required.
 
-Navigate through Company → Careers and verify:
+## Usage
 
-Locations block
+### Run Tests
 
-Teams / Find Your Calling block
-
-Life at Insider block
-
-Go to https://useinsider.com/careers/quality-assurance
-, click “See all QA Jobs”, then:
-
-Filter by Location: Istanbul, Turkey
-
-Filter by Department: Quality Assurance
-
-Verify that the QA job list exists
-
-Validate each job card:
-
-Position contains "Quality Assurance"
-
-Department contains "Quality Assurance"
-
-Location contains "Istanbul, Turkey"
-
-Click View Role and verify redirection to the Lever Application Form page
-
-⚠️ Observed UI Changes During the Implementation
-
-During the automation development, Insider's job platform changed significantly:
-
-Case Expectation	Actual System Behavior
-Navigation includes Company → Careers	Current UI does not include "Company" menu
-Careers/job pages hosted under useinsider.com	Job pages are served via insiderone.com
-QA listings expected to appear after filtering	For QA + Istanbul → no open positions currently exist
-Expected job list UI exists	System displays “Content is not available.”
-
-To ensure test stability, the automation framework includes fallback mechanisms and adaptive logic to handle real-world UI variations—without breaking the case requirements.
-
-🧱 Project Structure (POM)
-project/
-│
-├── pages/
-│   ├── base_page.py
-│   ├── home_page.py
-│   ├── careers_page.py
-│   ├── qa_page.py
-│   └── lever_job_page.py
-│
-├── tests/
-│   └── test_insider_qa_flow.py
-│
-├── conftest.py
-└── requirements.txt
-
-✔ POM Principles Applied
-
-Each page has its own Page Object
-
-Actions and locators are encapsulated
-
-Tests contain only workflow logic
-
-BasePage provides reusable helpers:
-
-click, find, scroll_into_view
-
-explicit waits
-
-safe interaction wrappers
-
-URL navigation
-
-⚙️ Installation & Setup
-1. Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-2. Install dependencies
-pip install -r requirements.txt
-
-
-Dependencies include:
-
-selenium
-
+```bash
+# Run all tests
 pytest
 
-webdriver-manager (if used)
-
-▶️ Running the Test
-
-From project root:
-
+# Run with verbose output
 pytest -v
 
-🧪 Test Logic Summary
+# Run specific test file
+pytest tests/test_insider_qa_flow.py
+
+# Run with detailed output
+pytest -v -s
+```
+
+### Advanced Options
+
+```bash
+# Generate HTML report
+pytest --html=report.html --self-contained-html
+
+# Run only failed tests
+pytest --lf
+
+# Show test names only
+pytest --collect-only
+```
+
+## Test Scenario
 
 The automated test performs the following steps:
 
-Step 1 — Home Page
-
-Open homepage
-
-Accept cookies if present
-
-Validate title contains “Insider”
-
-Step 2 — Careers Page
-
-Since the “Company” dropdown no longer exists,
-the test uses a fallback navigation method while still satisfying the case logic.
-
-Validates:
-
-Our Locations
-
-Teams / Find Your Calling
-
-Life at Insider
-
-Step 3 — QA Page + Filtering
-
-Navigates to:
-
-https://useinsider.com/careers/quality-assurance/
-
-
-Clicks “See all QA jobs”
-⚠️ This is often blocked by cookie banners, so a robust handler was implemented.
-
-The button redirects to:
-
-https://insiderone.com/careers/open-positions/?department=qualityassurance
-
-
-Applies filters for:
-
-Istanbul, Turkey
-
-Quality Assurance
-
-Dual-Scenario Logic
-✔ If job list exists:
-
-Extract job card data
-
-Validate position / department / location
-
-Proceed to Step 5 (Lever redirection)
-
-✔ If no job exists:
-
-Detect empty-state message:
-
-“Content is not available.”
-
-Mark test as PASS (acceptable scenario)
-
-Gracefully exit without failure
-
-This demonstrates senior-level handling of dynamic production systems.
-
-🔗 Step 5 — Lever Application Form Verification
-
-If any “View Role” button exists:
-
-Click the first one
-
-Detect new browser tab
-
-Switch to Lever tab
-
-Verify domain includes lever.co
-
-This confirms successful redirection.
-
-🛡 Resilience & Reliability Enhancements
-
-This automation includes advanced fault-tolerance:
-
-✔ Cookie-bar interception handling
-
-Avoids ElementClickInterceptedException by:
-
-Closing the banner if possible
-
-Retrying click via JavaScript fallback
-
-✔ URL-based fallback navigation
-
-Useful when UI menus change (as observed).
-
-✔ Dynamic empty-state detection
-
-Supports both future job availability AND current zero-job scenario.
-
-✔ Robust locator strategy
-
-Locators use:
-
-normalize-space
-
-contains
-
-stable DOM paths
-
-instead of brittle CSS chains.
-
-🧠 Why This Solution Is Senior-Level
-
-Correct POM structure
-
-Adaptable to UI changes without modifying tests
-
-Graceful degradation logic
-
-Clean, readable architecture
-
-Exception handling consistent with industry standards
-
-Abstracted utilities in BasePage
-
-Declarative test logic
-
-Ensures case intent is preserved despite live UI differences
-
-🎉 Final Notes
-
-This test suite is production-ready, stable, and extendable.
-It handles real system variations gracefully while fully meeting the case requirements.
-
-If job postings become available in the future,
-the same test will automatically switch to positive flow and validate:
-
-Job details
-
-Lever form redirect
-
-No code change needed.
+1. **Home Page** - Navigates to `https://insiderone.com/`, accepts cookies, validates page title
+2. **QA Careers Page** - Navigates to `https://insiderone.com/careers/quality-assurance/` page and validates page load
+3. **Filtering** - Clicks "See all QA jobs", applies filters (Location: Istanbul, Turkey; Department: Quality Assurance)
+4. **Job Validation** - Validates each job card contains correct Position, Department, and Location (if jobs exist)
+5. **Lever Redirect** - Clicks "View Role" and verifies redirection to Lever application form
+6. **Empty State** - Handles "Content is not available" scenario gracefully
+
+The test passes in both scenarios: when jobs exist and when the list is empty.
+
+## Project Structure
+
+```
+project/
+├── pages/
+│   ├── base_page.py          # Base page with common utilities
+│   ├── home_page.py          # Home page object
+│   ├── qa_page.py            # QA careers page object
+│   └── lever_job_page.py     # Lever application page object
+├── tests/
+│   └── test_insider_qa_flow.py  # Main test file
+├── conftest.py               # Pytest configuration
+└── README.md
+```
+
+## Troubleshooting
+
+### ChromeDriver Error
+ChromeDriver is automatically managed. Ensure Chrome browser is up to date.
+
+### Virtual Environment Not Active
+```bash
+source .venv/bin/activate  # Check for (.venv) prefix in terminal
+```
+
+### Import Errors
+```bash
+pip install --upgrade selenium pytest webdriver-manager
+```
+
+### Test Timeout
+- Check internet connection
+- Ensure Chrome browser is up to date
+- Page loading may take time - wait for elements
+
+## Notes
+
+This test suite handles real-world UI variations gracefully. If job postings become available in the future, the same test will automatically switch to positive flow validation without code changes.

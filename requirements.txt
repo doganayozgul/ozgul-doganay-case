@@ -1,0 +1,7 @@
+# Core dependencies
+selenium>=4.0.0
+pytest>=7.0.0
+webdriver-manager>=3.8.0
+
+# Optional: For HTML test reports
+pytest-html>=3.1.0

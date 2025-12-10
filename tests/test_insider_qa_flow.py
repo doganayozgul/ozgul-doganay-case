@@ -36,7 +36,7 @@ def test_insider_qa_career_flow(driver: "WebDriver") -> None:
     # --- Step 3: See all QA jobs & filters ---
     qa_page.click_see_all_qa_jobs()
     qa_page.filter_jobs(
-        location="Istanbul",
+        location="Istanbul, Turkiye",
         department="Quality Assurance",
     )
 
@@ -72,8 +72,8 @@ def test_insider_qa_career_flow(driver: "WebDriver") -> None:
             ), f"Job location does not contain 'Istanbul': {job.location}"
 
             if "," in job.location:
-                assert "Turkey" in job.location, (
-                    f"Job location should contain 'Turkey' "
+                assert "Turkiye" in job.location, (
+                    f"Job location should contain 'Turkiye' "
                     f"when country is present: {job.location}"
                 )
 

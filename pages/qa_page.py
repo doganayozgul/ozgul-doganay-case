@@ -192,7 +192,7 @@ class QAPage(BasePage):
                                 for line in lines
                                 if "Istanbul" in line
                                 or "İstanbul" in line
-                                or "Turkey" in line
+                                or "Turkiye" in line
                             ),
                             "",
                         )
@@ -207,7 +207,7 @@ class QAPage(BasePage):
                 department = "Quality Assurance"
 
             if not location:
-                location = "Istanbul, Turkey"
+                location = "Istanbul, Turkiye"
 
             jobs.append(
                 Job(

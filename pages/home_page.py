@@ -1,49 +1,31 @@
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException  # varsa kalsın, yoksa ekleyebilirsin
+from selenium.common.exceptions import TimeoutException
 
-from .base_page import BasePage
-from .careers_page import CareersPage
-
+from pages.base_page import BasePage
 
 class HomePage(BasePage):
-    URL = "https://useinsider.com/"
+    URL = "https://insiderone.com/"
 
     COOKIE_ACCEPT_ALL = (
         By.XPATH,
-        "//*[contains(normalize-space(), 'Accept All') or contains(normalize-space(), 'ACCEPT ALL')]",
+        "//button[contains(normalize-space(), 'Accept All') or contains(normalize-space(), 'ACCEPT ALL')] | //*[@role='button' and (contains(normalize-space(), 'Accept All') or contains(normalize-space(), 'ACCEPT ALL'))]",
     )
 
-    COMPANY_MENU = (
-        By.XPATH,
-        "//nav//*[normalize-space()='Company']"
-    )
-
-    CAREERS_LINK = (
-        By.XPATH,
-        "//nav//a[normalize-space()='Careers']"
-    )
-
-    def open_home(self):
+    def open_home(self) -> None:
+        """Open the home page."""
         self.open(self.URL)
 
-    def accept_cookies_if_present(self):
+    def accept_cookies_if_present(self) -> None:
+        """Accept cookies if cookie banner is present."""
         try:
-            elements = self.driver.find_elements(*self.COOKIE_ACCEPT_ALL)
-            if elements:
-                btn = elements[0]
-                self.scroll_into_view(btn)
-                btn.click()
-        except Exception:
+            # Wait for cookie banner to be visible with a shorter timeout
+            if self.is_visible(self.COOKIE_ACCEPT_ALL, timeout=5):
+                # Use BasePage's click method which includes explicit wait and clickability check
+                self.click(self.COOKIE_ACCEPT_ALL)
+        except TimeoutException:
+            # Cookie banner is not present, which is fine
             pass
 
     def is_loaded(self) -> bool:
+        """Check if the home page is loaded."""
         return "Insider" in self.driver.title
-
-    def go_to_careers_via_company_menu(self) -> CareersPage:
-        """
-        Case: Company > Careers adımı istiyor.
-        Ancak güncel sitede nav yapısı değiştiği için locator'lar her zaman çalışmıyor.
-        Bu yüzden burada direkt careers URL'ine yönlendiriyorum.
-        """
-        self.open("https://useinsider.com/careers/")
-        return CareersPage(self.driver)

@@ -1,24 +1,25 @@
 from typing import TYPE_CHECKING
 
-from pages import *
-
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
+
+from pages import HomePage, LeverJobPage, QAPage
 
 
 def test_insider_qa_career_flow(driver: "WebDriver") -> None:
     """
     Case Steps:
-    1. Visit https://insiderone.com/ and check Insider home page is opened and all main
-       blocks are loaded
-    2. Go to https://useinsider.com/careers/quality-assurance/, click “See all QA
-       jobs”, filter jobs by Location - Istanbul, Turkey and department - Quality
-       Assurance, check presence of jobs list
-    3. Check that all jobs’ Position contains “Quality Assurance”, Department
-       contains “Quality Assurance”, Location contains “Istanbul, Turkey”
-    4. Click “View Role” button and check that this action redirects us to Lever
-       Application form page
-     """
+    1. Visit https://insiderone.com/ and check Insider home page is opened
+       and all main blocks are loaded
+    2. Go to https://useinsider.com/careers/quality-assurance/, click
+       "See all QA jobs", filter jobs by Location - Istanbul, Turkey and
+       department - Quality Assurance, check presence of jobs list
+    3. Check that all jobs' Position contains "Quality Assurance",
+       Department contains "Quality Assurance", Location contains
+       "Istanbul, Turkey"
+    4. Click "View Role" button and check that this action redirects us to
+       Lever Application form page
+    """
 
     # --- Step 1: Home page ---
     home = HomePage(driver)
@@ -41,7 +42,8 @@ def test_insider_qa_career_flow(driver: "WebDriver") -> None:
 
     if not qa_page.has_job_list():
         assert qa_page.has_empty_state(), (
-            "Neither job list nor 'Content is not available.' empty state is visible."
+            "Neither job list nor 'Content is not available.' "
+            "empty state is visible."
         )
         return
 
@@ -55,19 +57,24 @@ def test_insider_qa_career_flow(driver: "WebDriver") -> None:
 
         if job.department:
             assert (
-                    "Quality" in job.department
-                    or "Assurance" in job.department
-                    or "QA" in job.department
-            ), f"Job department does not contain 'Quality Assurance': {job.department}"
+                "Quality" in job.department
+                or "Assurance" in job.department
+                or "QA" in job.department
+            ), (
+                f"Job department does not contain 'Quality Assurance': "
+                f"{job.department}"
+            )
 
         if job.location:
             assert (
-                    "Istanbul" in job.location or "İstanbul" in job.location
+                "Istanbul" in job.location
+                or "İstanbul" in job.location
             ), f"Job location does not contain 'Istanbul': {job.location}"
 
             if "," in job.location:
                 assert "Turkey" in job.location, (
-                    f"Job location should contain 'Turkey' when country is present: {job.location}"
+                    f"Job location should contain 'Turkey' "
+                    f"when country is present: {job.location}"
                 )
 
     # --- Step 4: Click 'View Role' and verify Lever redirect ---

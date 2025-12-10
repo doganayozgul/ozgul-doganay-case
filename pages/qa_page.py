@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import List, Tuple
 
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (
-    TimeoutException,
     ElementClickInterceptedException,
+    TimeoutException,
 )
+from selenium.webdriver.common.by import By
 
 from pages.base_page import BasePage
 from pages.lever_job_page import LeverJobPage
@@ -21,7 +21,7 @@ class Job:
 class QAPage(BasePage):
     URL = "https://useinsider.com/careers/quality-assurance/"
 
-    def open_qa_page(self):
+    def open_qa_page(self) -> None:
         self.open(self.URL)
 
     QA_H1 = (
@@ -92,7 +92,8 @@ class QAPage(BasePage):
             pass
 
         self.wait.until(
-            lambda d: "insiderone.com/careers/open-positions" in d.current_url
+            lambda d: "insiderone.com/careers/open-positions"
+            in d.current_url
         )
 
     def _click_if_present(self, locator: Tuple[str, str]) -> bool:
@@ -107,7 +108,10 @@ class QAPage(BasePage):
     def _click_option_by_text(self, text: str) -> bool:
         try:
             option = self.find(
-                (By.XPATH, f"//*[contains(normalize-space(), '{text}')]")
+                (
+                    By.XPATH,
+                    f"//*[contains(normalize-space(), '{text}')]",
+                )
             )
             self.scroll_into_view(option)
             option.click()
@@ -142,7 +146,10 @@ class QAPage(BasePage):
         except Exception:
             pass
 
-        return "content is not available" in self.driver.page_source.lower()
+        return (
+            "content is not available"
+            in self.driver.page_source.lower()
+        )
 
     def get_all_jobs(self) -> List[Job]:
         buttons = self.driver.find_elements(*self.VIEW_ROLE_BUTTONS)
@@ -160,28 +167,32 @@ class QAPage(BasePage):
                 )
                 text = card.text.strip()
                 if text:
-                    lines = [l.strip() for l in text.split("\n") if l.strip()]
+                    lines = [
+                        line.strip()
+                        for line in text.split("\n")
+                        if line.strip()
+                    ]
                     if lines:
                         position = lines[0]
 
                         department = next(
                             (
-                                l
-                                for l in lines
-                                if "Quality" in l
-                                   or "Assurance" in l
-                                   or "QA" in l
+                                line
+                                for line in lines
+                                if "Quality" in line
+                                or "Assurance" in line
+                                or "QA" in line
                             ),
                             "",
                         )
 
                         location = next(
                             (
-                                l
-                                for l in lines
-                                if "Istanbul" in l
-                                   or "İstanbul" in l
-                                   or "Turkey" in l
+                                line
+                                for line in lines
+                                if "Istanbul" in line
+                                or "İstanbul" in line
+                                or "Turkey" in line
                             ),
                             "",
                         )
@@ -198,11 +209,13 @@ class QAPage(BasePage):
             if not location:
                 location = "Istanbul, Turkey"
 
-            jobs.append(Job(
-                position=position,
-                department=department,
-                location=location,
-            ))
+            jobs.append(
+                Job(
+                    position=position,
+                    department=department,
+                    location=location,
+                )
+            )
 
         return jobs
 
@@ -223,7 +236,9 @@ class QAPage(BasePage):
 
         if len(self.driver.window_handles) > len(old_handles):
             new_handle = [
-                h for h in self.driver.window_handles if h not in old_handles
+                handle
+                for handle in self.driver.window_handles
+                if handle not in old_handles
             ][0]
             self.driver.switch_to.window(new_handle)
         return LeverJobPage(self.driver)

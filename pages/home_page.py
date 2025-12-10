@@ -1,14 +1,20 @@
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 
 from pages.base_page import BasePage
+
 
 class HomePage(BasePage):
     URL = "https://insiderone.com/"
 
     COOKIE_ACCEPT_ALL = (
         By.XPATH,
-        "//button[contains(normalize-space(), 'Accept All') or contains(normalize-space(), 'ACCEPT ALL')] | //*[@role='button' and (contains(normalize-space(), 'Accept All') or contains(normalize-space(), 'ACCEPT ALL'))]",
+        (
+            "//button[contains(normalize-space(), 'Accept All') "
+            "or contains(normalize-space(), 'ACCEPT ALL')] | "
+            "//*[@role='button' and (contains(normalize-space(), 'Accept All') "
+            "or contains(normalize-space(), 'ACCEPT ALL'))]"
+        ),
     )
 
     def open_home(self) -> None:

@@ -1,9 +1,9 @@
-from typing import Tuple, List, Optional
+from typing import List, Optional, Tuple
+
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class BasePage:

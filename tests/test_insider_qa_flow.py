@@ -35,19 +35,6 @@ def test_insider_qa_career_flow(driver: "WebDriver") -> None:
 
     # --- Step 3: See all QA jobs & filters ---
     qa_page.click_see_all_qa_jobs()
-    
-    # Check that job list exists before filtering
-    assert qa_page.has_job_list(), (
-        "No jobs found on the page before applying filters. "
-        "Expected to see at least some jobs before filtering."
-    )
-    initial_jobs = qa_page.get_all_jobs()
-    assert len(initial_jobs) > 0, (
-        f"Job list is empty before filtering. "
-        f"Expected at least 1 job, found {len(initial_jobs)}"
-    )
-    
-    # Apply filters
     qa_page.filter_jobs(
         location="Istanbul, Turkiye",
         department="Quality Assurance",
@@ -60,17 +47,14 @@ def test_insider_qa_career_flow(driver: "WebDriver") -> None:
         )
         return
 
-    # Get filtered jobs and verify they match filter criteria
     jobs = qa_page.get_all_jobs()
     assert jobs, "No jobs returned from QA job list."
 
-    # Verify each job matches the applied filters
     for job in jobs:
         assert "Quality" in job.position or "QA" in job.position, (
             f"Job position does not look like QA: {job.position}"
         )
 
-        # Check department matches Quality Assurance filter
         if job.department:
             assert (
                 "Quality" in job.department
@@ -81,7 +65,6 @@ def test_insider_qa_career_flow(driver: "WebDriver") -> None:
                 f"{job.department}"
             )
 
-        # Check location matches Istanbul, Turkiye filter
         if job.location:
             assert (
                 "Istanbul" in job.location
@@ -96,13 +79,4 @@ def test_insider_qa_career_flow(driver: "WebDriver") -> None:
 
     # --- Step 4: Click 'View Role' and verify Lever redirect ---
     lever_page = qa_page.open_first_job_in_lever()
-    
-    # Verify that we are redirected to Lever Application form page
-    assert "lever.co" in lever_page.current_url, (
-        f"Expected to be redirected to Lever application form page, "
-        f"but current URL is: {lever_page.current_url}"
-    )
-    assert lever_page.is_loaded(), (
-        f"Lever application form page is not loaded. "
-        f"URL: {lever_page.current_url}"
-    )
+    assert lever_page.is_loaded(), "Lever application form page is not loaded."

@@ -104,6 +104,7 @@ project/
 │   └── test_insider_qa_flow.py  # Main test file
 ├── conftest.py               # Pytest configuration
 └── README.md
+└── requirements.txt
 ```
 
 ## Troubleshooting
